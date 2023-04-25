@@ -40,7 +40,6 @@ watch(
       }
       return acc
     }, {})
-    console.log(fireTypeCount)
 
     // 设置色彩盘, 最多有46种火灾类型，所以需要拼接一下色彩盘
     const color = d3
@@ -59,13 +58,14 @@ watch(
     const pieData: PieDataItem[] = Object.keys(fireTypeCount).map((key) => {
       return { name: key, value: fireTypeCount[key] }
     })
-    const pie = d3
-      .pie<PieDataItem>()
-      .sort((a, b) => b.value - a.value)
-      .value((d) => d.value)
+
+    pieData.sort((a, b) => b.value - a.value)
+    const pie = d3.pie<PieDataItem>().value((d) => d.value)
     const dataReady = pie(pieData)
 
     // 绘制饼图
+    let cumulativeDelay = 0
+    const totalDuration = 500
     const arc = d3
       .arc()
       .innerRadius(radius * 0.5)
@@ -76,11 +76,27 @@ watch(
       .data(dataReady)
       .enter()
       .append('path')
-      .attr('d', arc as any)
       .attr('fill', (d) => color(d.data.name) as string)
       .attr('stroke', 'white')
       .style('stroke-width', 0.3)
       .style('opacity', 0.6)
+      .transition()
+      .duration(function (d) {
+        return ((d.endAngle - d.startAngle) / (2 * Math.PI)) * totalDuration
+      })
+      .delay(function (d) {
+        const delay = ((d.endAngle - d.startAngle) / (2 * Math.PI)) * totalDuration
+        cumulativeDelay += delay
+        return cumulativeDelay - delay
+      })
+      .ease(d3.easeLinear)
+      .attrTween('d', function (d: any) {
+        var i = d3.interpolate(d.startAngle, d.endAngle)
+        return function (t: any) {
+          d.endAngle = i(t)
+          return arc(d as any)
+        }
+      } as any)
 
     // 过滤掉小于一定比例的数据，避免标签密密麻麻重叠在一起
     const labelThreshod = 0.02
@@ -124,7 +140,6 @@ watch(
       .enter()
       .append('text')
       .text(function (d) {
-        console.log(d.data.name)
         return d.data.name
       })
       .attr('transform', function (d) {
