@@ -7,6 +7,11 @@ export interface LineDataItem {
   count: number
 }
 
+export interface PieDataItem {
+  name: string
+  value: number
+}
+
 export const fireTypeList = [
   '办公场所',
   '厂房',

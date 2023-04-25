@@ -1,0 +1,190 @@
+<template>
+  <div class="bg">
+    <svg ref="pieChart"></svg>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useFireStore } from '@/stores/fire'
+import { watch, ref } from 'vue'
+import type { Counts, PieDataItem } from './types'
+import * as d3 from 'd3'
+const store = useFireStore()
+const pieChart = ref<SVGSVGElement | null>(null)
+
+watch(
+  () => store.filteredData,
+  (data) => {
+    // 清除之前的图表
+    d3.select(pieChart.value).selectAll('*').remove()
+
+    const width = 342
+    const height = 326
+    const margin = 30
+    const radius = Math.min(width, height) / 2 - margin
+
+    const innerChart = d3
+      .select(pieChart.value)
+      .attr('width', width)
+      .attr('height', height)
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .append('g')
+      .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
+
+    // 计算各个类型的火灾数量
+    const fireTypeCount: Counts = data.reduce((acc: any, cur: any) => {
+      if (acc[cur.fire_type]) {
+        acc[cur.fire_type] += 1
+      } else {
+        acc[cur.fire_type] = 1
+      }
+      return acc
+    }, {})
+    console.log(fireTypeCount)
+
+    // 设置色彩盘, 最多有46种火灾类型，所以需要拼接一下色彩盘
+    const color = d3
+      .scaleOrdinal()
+      .domain(Object.keys(fireTypeCount))
+      .range([
+        ...d3.schemeDark2,
+        ...d3.schemeSet1,
+        ...d3.schemeSet2,
+        ...d3.schemeSet3,
+        ...d3.schemeCategory10,
+        ...d3.schemeTableau10
+      ])
+
+    // 将数据转换为饼图需要的数据格式
+    const pieData: PieDataItem[] = Object.keys(fireTypeCount).map((key) => {
+      return { name: key, value: fireTypeCount[key] }
+    })
+    const pie = d3
+      .pie<PieDataItem>()
+      .sort((a, b) => b.value - a.value)
+      .value((d) => d.value)
+    const dataReady = pie(pieData)
+
+    // 绘制饼图
+    const arc = d3
+      .arc()
+      .innerRadius(radius * 0.5)
+      .outerRadius(radius * 0.8)
+
+    innerChart
+      .selectAll('path')
+      .data(dataReady)
+      .enter()
+      .append('path')
+      .attr('d', arc as any)
+      .attr('fill', (d) => color(d.data.name) as string)
+      .attr('stroke', 'white')
+      .style('stroke-width', 0.3)
+      .style('opacity', 0.6)
+
+    // 过滤掉小于一定比例的数据，避免标签密密麻麻重叠在一起
+    const labelThreshod = 0.02
+    const filteredData = dataReady.filter(function (d) {
+      return d.value / data.length > labelThreshod
+    })
+
+    // 用于绘制到标签的连线中定位关键点
+    const outerArc = d3
+      .arc()
+      .innerRadius(radius * 0.9)
+      .outerRadius(radius * 0.9)
+
+    const helpArc = d3
+      .arc()
+      .innerRadius(radius * 0.8)
+      .outerRadius(radius * 0.8)
+
+    // 添加到标签的连线
+    innerChart
+      .selectAll('allPolylines')
+      .data(filteredData)
+      .enter()
+      .append('polyline')
+      .attr('stroke', '#CCC')
+      .style('fill', 'none')
+      .attr('stroke-width', 1)
+      .attr('points', function (d: any) {
+        var posA = helpArc.centroid(d as any)
+        var posB = outerArc.centroid(d as any)
+        var posC = outerArc.centroid(d as any)
+        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        posC[0] = radius * 0.88 * (midangle < Math.PI ? 1 : -1)
+        return [posA, posB, posC]
+      } as any)
+
+    // 添加标签
+    innerChart
+      .selectAll('allLabels')
+      .data(filteredData)
+      .enter()
+      .append('text')
+      .text(function (d) {
+        console.log(d.data.name)
+        return d.data.name
+      })
+      .attr('transform', function (d) {
+        var pos = outerArc.centroid(d as any)
+        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        pos[0] = radius * 0.9 * (midangle < Math.PI ? 1 : -1)
+        return 'translate(' + pos + ')'
+      })
+      .style('text-anchor', function (d) {
+        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        return midangle < Math.PI ? 'start' : 'end'
+      })
+      .style('font-size', 9)
+      .style('font-family', 'Inter')
+      .style('fill', 'white')
+
+    // 鼠标悬停时显示对应数据
+    const centerText = innerChart
+      .append('text')
+      .text('')
+      .style('text-anchor', 'middle')
+      .style('fill', 'white')
+
+    innerChart
+      .selectAll('path')
+      .on('mouseover', function (event, d: any) {
+        centerText
+          .text(d.data.name)
+          .style('font-size', 20)
+          .style('fill', color(d.data.name) as string)
+          .style('font-weight', 'bold')
+          .attr('dy', -5)
+          .append('tspan')
+          .text(d.data.value)
+          .style('font-size', 20)
+          .style('font-weight', 'bold')
+          .style('fill', color(d.data.name) as string)
+          .attr('x', 0)
+          .attr('dy', 30)
+
+        d3.select(this).style('opacity', 1)
+      })
+      .on('mouseout', function () {
+        centerText.text('')
+        d3.select(this).style('opacity', 0.6)
+      })
+  },
+  { immediate: true }
+)
+</script>
+
+<style scoped>
+.bg {
+  position: absolute;
+  width: 342px;
+  height: 326px;
+  left: 1559px;
+  top: 15px;
+
+  background: rgba(21, 27, 58, 0.7);
+  border-radius: 5px;
+}
+</style>
