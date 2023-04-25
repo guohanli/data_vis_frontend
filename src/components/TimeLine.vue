@@ -54,11 +54,14 @@ watch(
       .range([innerHeight, 0])
       .nice()
 
-    // 画 x 轴和 y 轴
+    // 定义 x 轴和 y 轴格式
     const bottomAxis = d3
       .axisBottom(xScale)
       .tickFormat(d3.timeFormat('%Y-%m') as any)
       .ticks(18)
+    const leftAxis = d3.axisLeft(yScale).ticks(5)
+
+    // 绘制 x 轴和 y 轴
     innerChart
       .append('g')
       .attr('class', 'axis-x')
@@ -66,7 +69,6 @@ watch(
       .call(bottomAxis)
       .call((g) => g.select('.domain').remove())
       .call((g) => g.selectAll('.tick text').attr('fill', '#A3A3A3'))
-    const leftAxis = d3.axisLeft(yScale).ticks(5)
     innerChart
       .append('g')
       .attr('class', 'axis-y')
@@ -82,20 +84,13 @@ watch(
       )
       .call((g) => g.selectAll('.tick text').attr('fill', '#A3A3A3').attr('x', '-10px'))
 
+    // 定义折线生成器
     const line = d3
       .line<LineDataItem>()
       .x((d) => xScale(d.date))
       .y((d) => yScale(d.count))
 
-    // 画折线
-    innerChart
-      .append('path')
-      .attr('d', line(lineData))
-      .attr('stroke-width', '2')
-      .style('fill', 'none')
-      .attr('stroke', '#826AF9')
-
-    // 画渐变区域
+    // 定义渐变色
     const gradient = innerChart
       .append('defs')
       .append('linearGradient')
@@ -111,6 +106,16 @@ watch(
       .attr('stop-color', 'rgba(130, 106, 249, 0.411701)')
     gradient.append('stop').attr('offset', '98.2%').attr('stop-color', 'rgba(130, 106, 249, 0)')
 
+    // 定义初始面积生成器
+    const zeroArea = d3
+      .area<LineDataItem>()
+      .x(function (d) {
+        return xScale(d.date)
+      })
+      .y0(innerHeight)
+      .y1(0)
+
+    // 定义面积生成器
     const area = d3
       .area<LineDataItem>()
       .x(function (d) {
@@ -121,11 +126,36 @@ watch(
         return yScale(d.count)
       })
 
+    // 画折线下的面积部分
     innerChart
       .append('path')
+      .attr('d', zeroArea(lineData))
+      .style('fill', 'url(#areaGradient)')
+      .style('opacity', '0.2')
+      .transition()
+      .duration(1500)
       .attr('d', area(lineData))
       .style('fill', 'url(#areaGradient)')
       .style('opacity', '0.2')
+
+    // 画折线
+    const path = innerChart
+      .append('path')
+      .attr('d', line(lineData))
+      .attr('stroke-width', '2')
+      .style('fill', 'none')
+      .attr('stroke', '#826AF9')
+
+    // 添加折线绘制动画效果
+    const length = path.node()?.getTotalLength()
+    path
+      .attr('stroke-dasharray', length + ' ' + length)
+      .attr('stroke-dashoffset', `${length}`)
+      .transition()
+      .ease(d3.easeLinear)
+      .attr('stroke-dashoffset', 0)
+      .delay(1500)
+      .duration(1500)
 
     function handleBrush(this: SVGGElement, e: any) {
       // 清除先前添加的边界线和圆点
