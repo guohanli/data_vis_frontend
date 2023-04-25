@@ -5,10 +5,13 @@
 </template>
 
 <script setup lang="ts">
-import { useFireStore } from '@/stores/fire'
 import { watch, ref } from 'vue'
-import type { Counts, PieDataItem } from './types'
 import * as d3 from 'd3'
+
+import { useFireStore } from '@/stores/fire'
+import type { Counts, PieDataItem } from './types'
+import { fireTypeList } from './types'
+
 const store = useFireStore()
 const pieChart = ref<SVGSVGElement | null>(null)
 
@@ -44,7 +47,7 @@ watch(
     // 设置色彩盘, 最多有46种火灾类型，所以需要拼接一下色彩盘
     const color = d3
       .scaleOrdinal()
-      .domain(Object.keys(fireTypeCount))
+      .domain(fireTypeList)
       .range([
         ...d3.schemeDark2,
         ...d3.schemeSet1,
