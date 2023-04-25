@@ -27,6 +27,7 @@ export const useFireStore = defineStore('fire', () => {
         station_build_time: new Date(d.station_build_time)
       }
     })
+    fireData.value.sort((a, b) => a.fire_time.getTime() - b.fire_time.getTime())
   }
 
   const filteredData = computed(() => {

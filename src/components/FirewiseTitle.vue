@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="title-bg">
     <span class="title">智慧消防</span>
@@ -11,6 +9,8 @@
     <span class="city">杭州市</span>
   </div>
 </template>
+
+<script setup lang="ts"></script>
 
 <style scoped>
 .title-bg {
