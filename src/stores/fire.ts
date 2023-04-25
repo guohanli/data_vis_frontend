@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as d3 from 'd3'
+import { fireTypeList } from '@/components/types'
 
 export const useFireStore = defineStore('fire', () => {
   const csvData = ref<Array<CsvItem>>([])
   const fireData = ref<Array<FireItem>>([])
   const timeRange = ref<[Date, Date]>([
     new Date('2007-01-01 00:00:00'),
-    new Date('2020-12-31 23:59:59')
+    new Date('2021-01-01 00:00:00')
   ])
+  const fireTypes = ref<Array<string>>(fireTypeList)
 
   async function loadData() {
     csvData.value = (await d3.csv('fire_info.csv')) as Array<CsvItem>
@@ -31,14 +33,18 @@ export const useFireStore = defineStore('fire', () => {
   }
 
   const filteredData = computed(() => {
+    // 按时间和火灾类型过滤
     return fireData.value.filter(
-      (d) => d.fire_time >= timeRange.value[0] && d.fire_time <= timeRange.value[1]
+      (d) =>
+        d.fire_time >= timeRange.value[0] &&
+        d.fire_time <= timeRange.value[1] &&
+        fireTypes.value.includes(d.fire_type)
     )
   })
 
   loadData()
 
-  return { fireData, timeRange, filteredData }
+  return { fireData, timeRange, fireTypes, filteredData }
 })
 
 interface FireItem {
