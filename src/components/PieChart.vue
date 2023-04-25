@@ -77,8 +77,6 @@ watch(
       .enter()
       .append('path')
       .attr('fill', (d) => color(d.data.name) as string)
-      .attr('stroke', 'white')
-      .style('stroke-width', 0.3)
       .style('opacity', 0.6)
       .transition()
       .duration(function (d) {
