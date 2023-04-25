@@ -1,6 +1,7 @@
 <template>
   <div class="bg">
-    <svg ref="pieChart"></svg>
+    <svg v-show="store.filteredData.length > 0" ref="pieChart"></svg>
+    <div class="info" v-show="store.filteredData.length === 0">这里一条数据都没有哦 😭</div>
   </div>
 </template>
 
@@ -202,5 +203,17 @@ watch(
 
   background: rgba(21, 27, 58, 0.7);
   border-radius: 5px;
+}
+
+.info {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  color: #fff;
+  font-size: 40px;
 }
 </style>
