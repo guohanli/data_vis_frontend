@@ -16,9 +16,9 @@
 .title-bg {
   position: absolute;
   width: 208px;
-  height: 299px;
+  height: 27.6852vh;
   left: -42px;
-  top: 363px;
+  top: 33.6111vh;
 
   background: linear-gradient(267.18deg, rgba(66, 74, 113, 0.7) 2.51%, rgba(66, 74, 113, 0) 65.21%);
   border-radius: 41px;
@@ -29,15 +29,15 @@
 
   position: absolute;
   width: 29px;
-  height: 265px;
+  height: 24.537vh;
   left: 94px;
-  top: 34px;
+  top: 3.148148vh;
 
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
-  font-size: 45px;
-  line-height: 53px;
+  font-size: 4.17vh;
+  line-height: 4.907vh;
   text-align: center;
 
   color: #ffffff;
@@ -48,15 +48,16 @@
 
   position: absolute;
   width: 29px;
-  height: 196px;
+  height: 18.148vh;
+  padding-left: 1vh;
   left: 144px;
-  top: 38px;
+  top: 4vh;
 
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
-  font-size: 25px;
-  line-height: 28px;
+  font-size: 2.3148vh;
+  line-height: 2.59259vh;
   text-align: center;
 
   color: #a8a6f7;
@@ -65,9 +66,9 @@
 .location-bg {
   position: absolute;
   width: 166px;
-  height: 102px;
+  height: 9.444vh;
   left: 0px;
-  top: 683px;
+  top: 63.241vh;
 
   background: linear-gradient(267.18deg, rgba(66, 74, 113, 0.7) 2.51%, rgba(66, 74, 113, 0) 65.21%);
   border-radius: 41px;
@@ -80,7 +81,7 @@
   width: 82px;
   height: 23px;
   left: 42px;
-  top: 15px;
+  top: 1.38888vh;
 
   font-family: 'Roboto';
   font-style: normal;
@@ -99,7 +100,7 @@
   width: 82px;
   height: 29px;
   left: 44px;
-  top: 52px;
+  top: 4.814814vh;
 
   font-family: 'Roboto';
   font-style: normal;
