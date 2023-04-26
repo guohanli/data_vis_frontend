@@ -93,7 +93,7 @@ watch(
       })
       .ease(d3.easeLinear)
       .attrTween('d', function (d: any) {
-        var i = d3.interpolate(d.startAngle, d.endAngle)
+        const i = d3.interpolate(d.startAngle, d.endAngle)
         return function (t: any) {
           d.endAngle = i(t)
           return arc(d as any)
@@ -126,11 +126,22 @@ watch(
       .attr('stroke', '#CCC')
       .style('fill', 'none')
       .attr('stroke-width', 1)
+      // 添加初始点，供动画使用
       .attr('points', function (d: any) {
-        var posA = helpArc.centroid(d as any)
-        var posB = outerArc.centroid(d as any)
-        var posC = outerArc.centroid(d as any)
-        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        const posA = helpArc.centroid(d as any)
+        const posB = helpArc.centroid(d as any)
+        const posC = helpArc.centroid(d as any)
+        return [posA, posB, posC]
+      } as any)
+      .transition()
+      .delay(totalDuration)
+      .ease(d3.easeLinear)
+      .duration(200)
+      .attr('points', function (d: any) {
+        const posA = helpArc.centroid(d as any)
+        const posB = outerArc.centroid(d as any)
+        const posC = outerArc.centroid(d as any)
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
         posC[0] = radius * 0.88 * (midangle < Math.PI ? 1 : -1)
         return [posA, posB, posC]
       } as any)
@@ -141,22 +152,25 @@ watch(
       .data(filteredData)
       .enter()
       .append('text')
-      .text(function (d) {
-        return d.data.name
-      })
       .attr('transform', function (d) {
-        var pos = outerArc.centroid(d as any)
-        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        const pos = outerArc.centroid(d as any)
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
         pos[0] = radius * 0.9 * (midangle < Math.PI ? 1 : -1)
         return 'translate(' + pos + ')'
       })
       .style('text-anchor', function (d) {
-        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
         return midangle < Math.PI ? 'start' : 'end'
       })
       .style('font-size', 9)
       .style('font-family', 'Inter')
       .style('fill', 'white')
+      .transition()
+      .delay(totalDuration + 200)
+      .ease(d3.easeLinear)
+      .text(function (d) {
+        return d.data.name
+      })
 
     // 鼠标悬停时显示对应数据
     const centerText = innerChart
