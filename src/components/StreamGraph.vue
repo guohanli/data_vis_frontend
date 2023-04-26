@@ -8,6 +8,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import * as d3 from 'd3'
+
 import { useFireStore } from '@/stores/fire'
 import { color } from './types'
 
@@ -132,8 +133,30 @@ watch(
       .join('path')
       .attr('d', area)
       .attr('fill', (d, i) => color(store.fireTypes[i]) as string)
-  },
-  { immediate: true }
+      // 设置鼠标交互
+      .on('mouseover', (e, d) => {
+        store.highlightedType = d.key
+      })
+      .on('mouseout', () => {
+        store.highlightedType = null
+      })
+      .on('click', (e, d) => {
+        store.fireTypes = [d.key]
+      })
+  }
+)
+
+watch(
+  () => store.highlightedType,
+  (type) => {
+    if (type === null) {
+      d3.select(streamGraph.value).selectAll('path').attr('opacity', 1)
+    } else {
+      d3.select(streamGraph.value)
+        .selectAll('path')
+        .attr('opacity', (d, i) => (store.fireTypes[i] === type ? 1 : 0.2))
+    }
+  }
 )
 </script>
 

@@ -35,8 +35,7 @@ watch(
   () => store.fireTypes,
   (fireTypes) => {
     checkedAll.value = fireTypes.length === fireTypeList.length
-  },
-  { immediate: true }
+  }
 )
 </script>
 

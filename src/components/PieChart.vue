@@ -15,6 +15,7 @@ import { color } from './types'
 
 const store = useFireStore()
 const pieChart = ref<SVGSVGElement | null>(null)
+let dataReady: any[] = []
 
 watch(
   () => store.filteredData,
@@ -34,6 +35,7 @@ watch(
       .attr('viewBox', `0 0 ${width} ${height}`)
       .append('g')
       .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
+      .attr('class', 'inner-chart')
 
     // 计算各个类型的火灾数量
     const fireTypeCount: Counts = data.reduce((acc: any, cur: any) => {
@@ -52,7 +54,7 @@ watch(
 
     pieData.sort((a, b) => b.value - a.value)
     const pie = d3.pie<PieDataItem>().value((d) => d.value)
-    const dataReady = pie(pieData)
+    dataReady = pie(pieData)
 
     // 绘制饼图
     let cumulativeDelay = 0
@@ -68,7 +70,6 @@ watch(
       .enter()
       .append('path')
       .attr('fill', (d) => color(d.data.name) as string)
-      .style('opacity', 0.6)
       .transition()
       .duration(function (d) {
         return ((d.endAngle - d.startAngle) / (2 * Math.PI)) * totalDuration
@@ -159,38 +160,57 @@ watch(
         return d.data.name
       })
 
-    // 鼠标悬停时显示对应数据
-    const centerText = innerChart
-      .append('text')
-      .text('')
-      .style('text-anchor', 'middle')
-      .style('fill', 'white')
-
+    // 添加鼠标交互
     innerChart
       .selectAll('path')
       .on('mouseover', function (event, d: any) {
-        centerText
-          .text(d.data.name)
-          .style('font-size', 20)
-          .style('fill', color(d.data.name) as string)
-          .style('font-weight', 'bold')
-          .attr('dy', -5)
-          .append('tspan')
-          .text(d.data.value)
-          .style('font-size', 20)
-          .style('font-weight', 'bold')
-          .style('fill', color(d.data.name) as string)
-          .attr('x', 0)
-          .attr('dy', 30)
-
-        d3.select(this).style('opacity', 1)
+        store.highlightedType = d.data.name
       })
       .on('mouseout', function () {
-        centerText.text('')
-        d3.select(this).style('opacity', 0.6)
+        store.highlightedType = null
       })
-  },
-  { immediate: true }
+      .on('click', function (event, d: any) {
+        store.fireTypes = [d.data.name]
+      })
+  }
+)
+
+watch(
+  () => store.highlightedType,
+  (type) => {
+    // 高亮对应的饼图
+    d3.select(pieChart.value)
+      .selectAll('path')
+      .style('opacity', (d: any) => {
+        return store.highlightedType === null || store.highlightedType === d.data.name ? 1 : 0.2
+      })
+
+    // 在饼图中心显示对应的类型和数量
+    d3.select('.center-text').remove()
+    const d = dataReady.find((d) => d.data.name === type)
+    const centerText = d3
+      .select('.inner-chart')
+      .append('text')
+      .attr('class', 'center-text')
+      .style('text-anchor', 'middle')
+      .text('')
+
+    if (type) {
+      centerText
+        .text(d.data.name)
+        .style('font-size', 20)
+        .style('fill', color(d.data.name) as string)
+        .style('font-weight', 'bold')
+        .attr('dy', -5)
+        .append('tspan')
+        .text(d.data.value)
+        .style('font-size', 20)
+        .style('font-weight', 'bold')
+        .style('fill', color(d.data.name) as string)
+        .attr('x', 0)
+        .attr('dy', 30)
+    }
+  }
 )
 </script>
 

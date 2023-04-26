@@ -11,6 +11,7 @@ export const useFireStore = defineStore('fire', () => {
     new Date('2021-01-01 00:00:00')
   ])
   const fireTypes = ref<Array<string>>(fireTypeList)
+  const highlightedType = ref<string | null>(null)
 
   async function loadData() {
     csvData.value = (await d3.csv('fire_info.csv')) as Array<CsvItem>
@@ -44,7 +45,7 @@ export const useFireStore = defineStore('fire', () => {
 
   loadData()
 
-  return { fireData, timeRange, fireTypes, filteredData }
+  return { fireData, timeRange, fireTypes, highlightedType, filteredData }
 })
 
 interface FireItem {

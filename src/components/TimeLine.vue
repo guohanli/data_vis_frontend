@@ -5,9 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import { useFireStore } from '@/stores/fire'
 import { watch, ref } from 'vue'
 import * as d3 from 'd3'
+
+import { useFireStore } from '@/stores/fire'
 import type { Counts, LineDataItem } from './types'
 
 const store = useFireStore()
