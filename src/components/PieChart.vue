@@ -11,7 +11,7 @@ import * as d3 from 'd3'
 
 import { useFireStore } from '@/stores/fire'
 import type { Counts, PieDataItem } from './types'
-import { fireTypeList } from './types'
+import { color } from './types'
 
 const store = useFireStore()
 const pieChart = ref<SVGSVGElement | null>(null)
@@ -44,19 +44,6 @@ watch(
       }
       return acc
     }, {})
-
-    // 设置色彩盘, 最多有46种火灾类型，所以需要拼接一下色彩盘
-    const color = d3
-      .scaleOrdinal()
-      .domain(fireTypeList)
-      .range([
-        ...d3.schemeDark2,
-        ...d3.schemeSet1,
-        ...d3.schemeSet2,
-        ...d3.schemeSet3,
-        ...d3.schemeCategory10,
-        ...d3.schemeTableau10
-      ])
 
     // 将数据转换为饼图需要的数据格式
     const pieData: PieDataItem[] = Object.keys(fireTypeCount).map((key) => {
