@@ -37,8 +37,8 @@ watch(
     const svg = d3
       .select(lineChart.value)
       .attr('viewBox', `0 0 ${width} ${height}`)
-      .attr('width', width)
-      .attr('height', height)
+      .attr('width', '100%')
+      .attr('height', '80%')
     const innerChart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     // 定义 x 轴和 y 轴的比例尺
