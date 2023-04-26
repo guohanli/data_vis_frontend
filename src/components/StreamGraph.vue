@@ -65,7 +65,6 @@ watch(
       return acc
     }, {})
     fireTypeCount[24] = fireTypeCount[0]
-    console.log(fireTypeCount)
 
     // 将数据转化为堆栈格式
     const stack = d3.stack().keys(store.fireTypes).offset(d3.stackOffsetWiggle)
