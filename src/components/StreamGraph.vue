@@ -143,6 +143,11 @@ watch(
       .on('click', (e, d) => {
         store.fireTypes = [d.key]
       })
+      .attr('opacity', 0)
+      .transition()
+      .ease(d3.easeLinear)
+      .duration(1000)
+      .attr('opacity', 1)
   }
 )
 
