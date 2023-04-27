@@ -50,7 +50,7 @@ watch(
   background: rgba(21, 27, 58, 0.7);
   border-radius: 5px;
 
-  padding: 20px 10px 10px 24px;
+  padding: 20px 13px 10px 24px;
 }
 
 header {
@@ -103,5 +103,16 @@ main {
   max-height: 252px; /* 设置一个适当的高度 */
   overflow-y: auto; /* 在需要时显示垂直滚动条 */
   padding-right: 7px; /* 防止滚动条与文字重叠 */
+}
+
+::-webkit-scrollbar {
+  width: 6px; /* 设置滚动条的宽度 */
+  background-color: #9daadd; /* 设置滚动条的背景颜色 */
+  border-radius: 9px; /* 设置滚动条的圆角 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333977; /* 设置滚动条的前景颜色 */
+  border-radius: 9px;
 }
 </style>
