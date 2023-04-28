@@ -189,6 +189,7 @@ watch(
     d3.select('.center-text').remove()
     const d = dataReady.find((d) => d.data.name === type)
     const centerText = d3
+      .select(pieChart.value)
       .select('.inner-chart')
       .append('text')
       .attr('class', 'center-text')
