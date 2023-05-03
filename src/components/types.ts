@@ -1,4 +1,23 @@
 import * as d3 from 'd3'
+
+export interface FireItem {
+  id: number
+  fire_code: number
+  fire_time: Date
+  fire_type: string
+  station_code: string
+  battle_type: string
+  fire_lat: number
+  fire_lng: number
+  station_lat: number
+  station_lng: number
+  station_build_time: Date
+}
+
+export interface CsvItem {
+  [key: string]: string
+}
+
 export interface Counts {
   [key: string]: number
 }
@@ -74,3 +93,29 @@ export const color = d3
     ...d3.schemeCategory10,
     ...d3.schemeTableau10
   ])
+
+export interface FireLocation {
+  fire_code: number
+  fire_lat: number
+  fire_lng: number
+  station_code: string
+  battle_type: string
+  fire_type: string
+}
+
+export interface FireStation {
+  station_code: string
+  station_lat: number
+  station_lng: number
+  task_count?: number
+}
+
+export interface GridData {
+  topLeft: [number, number]
+  bottomRight: [number, number]
+  fireCount: number
+  totalDistance: number
+  stationCount: number
+  risk: number
+  reinforcementCount: number
+}

@@ -1,6 +1,12 @@
 <template>
   <div class="bg">
     <svg ref="lineChart"></svg>
+    <div class="layer-options">
+      <div class="option" v-for="(value, key) in LayerTypeDict" :key="key">
+        <input type="checkbox" :id="key" :value="key" v-model="mapStore.mapLayers" />
+        <label :for="key"> <span class="custom-icon"></span>{{ value }} </label>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -9,13 +15,21 @@ import { watch, ref } from 'vue'
 import * as d3 from 'd3'
 
 import { useFireStore } from '@/stores/fire'
+import { useMapStore } from '@/stores/map'
 import type { Counts, LineDataItem } from './types'
 
-const store = useFireStore()
+const fireStore = useFireStore()
+const mapStore = useMapStore()
 const lineChart = ref<HTMLElement | null>(null)
+const LayerTypeDict = {
+  'reinforcement-grid-layer': '显示增援密度',
+  'grid-layer': '显示火灾风险',
+  'fire-location-layer': '显示火灾点',
+  'fire-station-layer': '显示消防站'
+}
 
 watch(
-  () => store.fireData,
+  () => fireStore.fireData,
   (fireData) => {
     // 计算每个月的火灾数量
     const counts: Counts = {}
@@ -31,7 +45,7 @@ watch(
 
     const width = 1308
     const height = 138
-    const margin = { top: 20, right: 25, bottom: 30, left: 40 }
+    const margin = { top: 20, right: 25, bottom: 20, left: 40 }
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
@@ -39,7 +53,7 @@ watch(
       .select(lineChart.value)
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('width', '100%')
-      .attr('height', '80%')
+      .attr('height', '78%')
     const innerChart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     // 定义 x 轴和 y 轴的比例尺
@@ -172,7 +186,7 @@ watch(
 
       // 如果没有选中区域，则默认是全部区域
       if (!e.selection) {
-        store.timeRange = [parseTime('2007-01'), parseTime('2021-01')] as [Date, Date]
+        fireStore.timeRange = [parseTime('2007-01'), parseTime('2021-01')] as [Date, Date]
         return
       }
 
@@ -228,7 +242,7 @@ watch(
       endDate.setMonth(endDate.getMonth() + 1)
       endDate.setDate(0)
       endDate.setHours(23, 59, 59, 999)
-      store.timeRange = [startDate, endDate]
+      fireStore.timeRange = [startDate, endDate]
     }
 
     const brush = d3.brushX().on('start brush end', handleBrush)
@@ -247,5 +261,47 @@ watch(
 
   background: rgba(21, 27, 58, 0.7);
   border-radius: 5px;
+}
+
+.layer-options {
+  display: flex;
+  justify-content: flex-end;
+  gap: 30px;
+  padding-right: 25px;
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+
+.custom-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-size: cover;
+  margin-right: 10px;
+}
+
+input[type='checkbox'] + label[for] .custom-icon {
+  background-image: url('@/assets/unchecked.svg');
+}
+
+input[type='checkbox']:checked + label[for] .custom-icon {
+  background-image: url('@/assets/checked.svg');
+}
+
+label {
+  display: flex;
+  align-items: center;
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+label span {
+  flex-shrink: 0;
 }
 </style>

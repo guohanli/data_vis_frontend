@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as d3 from 'd3'
 import { fireTypeList } from '@/components/types'
+import type { CsvItem, FireItem, FireLocation, FireStation } from '@/components/types'
 
 export const useFireStore = defineStore('fire', () => {
   const csvData = ref<Array<CsvItem>>([])
@@ -43,25 +44,75 @@ export const useFireStore = defineStore('fire', () => {
     )
   })
 
+  const fireLocations = computed(() => {
+    // 传回经过过滤后的数据，所有火灾的经纬度
+    const data: FireLocation[] = filteredData.value.map((d) => {
+      return {
+        fire_code: d.fire_code,
+        fire_lat: d.fire_lat,
+        fire_lng: d.fire_lng,
+        station_code: d.station_code,
+        battle_type: d.battle_type,
+        fire_type: d.fire_type
+      }
+    })
+    // 去掉相同的火灾点
+    const fireCodeSet = new Set<number>()
+    const fireLocations = data.filter((d) => {
+      if (fireCodeSet.has(d.fire_code)) {
+        return false
+      } else {
+        fireCodeSet.add(d.fire_code)
+        return true
+      }
+    })
+    return fireLocations
+  })
+
+  const fireStations = computed(() => {
+    // 传回经过过滤后的数据，所有消防站的经纬度
+    const data: FireStation[] = filteredData.value.map((d) => {
+      return {
+        station_code: d.station_code,
+        station_lat: d.station_lat,
+        station_lng: d.station_lng
+      }
+    })
+    // 去掉相同的消防站
+    const stationCodeSet = new Set<string>()
+    const fireStations = data.filter((d) => {
+      if (stationCodeSet.has(d.station_code)) {
+        return false
+      } else {
+        stationCodeSet.add(d.station_code)
+        return true
+      }
+    })
+
+    // 计算每个消防站的出警次数
+    const stationCodeToCount = new Map<string, number>()
+    for (const d of filteredData.value) {
+      if (stationCodeToCount.has(d.station_code)) {
+        stationCodeToCount.set(d.station_code, stationCodeToCount.get(d.station_code)! + 1)
+      } else {
+        stationCodeToCount.set(d.station_code, 1)
+      }
+    }
+    for (const d of fireStations) {
+      d.task_count = stationCodeToCount.get(d.station_code)!
+    }
+    return fireStations
+  })
+
   loadData()
 
-  return { fireData, timeRange, fireTypes, highlightedType, filteredData }
+  return {
+    fireData,
+    timeRange,
+    fireTypes,
+    highlightedType,
+    filteredData,
+    fireLocations,
+    fireStations
+  }
 })
-
-interface FireItem {
-  id: number
-  fire_code: number
-  fire_time: Date
-  fire_type: string
-  station_code: string
-  battle_type: string
-  fire_lat: number
-  fire_lng: number
-  station_lat: number
-  station_lng: number
-  station_build_time: Date
-}
-
-interface CsvItem {
-  [key: string]: string
-}
