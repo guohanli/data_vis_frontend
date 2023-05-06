@@ -14,6 +14,29 @@ export interface FireItem {
   station_build_time: Date
 }
 
+export interface WeatherItem {
+  time?: Date
+  T: number
+  'T. max ave.': number
+  'T. min ave.': number
+  'T. max abs.': number
+  'T. min abs.': number
+  'Prec.(mm)': number
+  'Days(1mm)': number
+  'Days(0.1mm)': number
+  'Days(snow)': number
+  'Days(storm)': number
+  'Days(fog)': number
+  'Days(frost)': number
+}
+
+export interface OtherInfoItem {
+  time?: Date
+  population_density: number
+  mean_registered_capital: number
+  enterprise_count: number
+}
+
 export interface CsvItem {
   [key: string]: string
 }
@@ -118,4 +141,29 @@ export interface GridData {
   stationCount: number
   risk: number
   reinforcementCount: number
+}
+
+export interface OtherDataItem {
+  time?: Date
+  population_density: number[]
+  mean_registered_capital: number[]
+  enterprise_count: number[]
+}
+
+export const nameMap: {} = {
+  population_density: '人口密度',
+  enterprise_count: '企业密度',
+  mean_registered_capital: '平均注册资本',
+  T: '平均温度',
+  'T. max abs.': '最高温度',
+  'T. min abs.': '最低温度',
+  'T. max ave.': '最高均温',
+  'T. min ave.': '最低均温',
+  'Prec.(mm)': '降水量',
+  'Days(1mm)': '降雨天数',
+  'Days(0.1mm)': '潮湿天数',
+  'Days(snow)': '降雪天数',
+  'Days(storm)': '风暴天数',
+  'Days(fog)': '起雾天数',
+  'Days(frost)': '霜冻天数'
 }

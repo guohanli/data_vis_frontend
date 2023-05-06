@@ -2,11 +2,18 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as d3 from 'd3'
 import { fireTypeList } from '@/components/types'
-import type { CsvItem, FireItem, FireLocation, FireStation } from '@/components/types'
+import type {
+  CsvItem,
+  FireItem,
+  WeatherItem,
+  OtherInfoItem,
+  FireLocation,
+  FireStation
+} from '@/components/types'
 
 export const useFireStore = defineStore('fire', () => {
   const csvData = ref<Array<CsvItem>>([])
-  const fireData = ref<Array<FireItem>>([])
+  const fireData = ref<Array<FireItem & WeatherItem & OtherInfoItem>>([])
   const timeRange = ref<[Date, Date]>([
     new Date('2007-01-01 00:00:00'),
     new Date('2021-01-01 00:00:00')
@@ -28,7 +35,22 @@ export const useFireStore = defineStore('fire', () => {
         fire_lng: parseFloat(d.fire_lng),
         station_lat: parseFloat(d.station_lat),
         station_lng: parseFloat(d.station_lng),
-        station_build_time: new Date(d.station_build_time)
+        station_build_time: new Date(d.station_build_time),
+        population_density: parseInt(d.population_density),
+        mean_registered_capital: parseInt(d.mean_registered_capital),
+        enterprise_count: parseInt(d.enterprise_count),
+        T: parseFloat(d.T),
+        'T. max ave.': parseFloat(d['T. max ave.']),
+        'T. min ave.': parseFloat(d['T. min ave.']),
+        'T. max abs.': parseFloat(d['T. max abs.']),
+        'T. min abs.': parseFloat(d['T. min abs.']),
+        'Prec.(mm)': parseFloat(d['Prec.(mm)']),
+        'Days(1mm)': parseInt(d['Days(1mm)']),
+        'Days(0.1mm)': parseInt(d['Days(0.1mm)']),
+        'Days(snow)': parseInt(d['Days(snow)']),
+        'Days(storm)': parseInt(d['Days(storm)']),
+        'Days(fog)': parseInt(d['Days(fog)']),
+        'Days(frost)': parseInt(d['Days(frost)'])
       }
     })
     fireData.value.sort((a, b) => a.fire_time.getTime() - b.fire_time.getTime())

@@ -84,6 +84,7 @@ watch(
       .call(bottomAxis)
       .call((g) => g.select('.domain').remove())
       .call((g) => g.selectAll('.tick text').attr('fill', '#A3A3A3'))
+      .call((g) => g.selectAll('.tick line').style('color', '#A3A3A3'))
     innerChart
       .append('g')
       .attr('class', 'axis-y')
@@ -294,7 +295,6 @@ label {
   display: flex;
   align-items: center;
 
-  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;

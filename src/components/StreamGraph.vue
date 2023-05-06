@@ -48,7 +48,6 @@ watch(
       .attr('font-size', 18)
       .attr('font-weight', 'bold')
       .style('fill', '#fff')
-      .style('font-family', 'Inter')
 
     const innerChart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`)
 

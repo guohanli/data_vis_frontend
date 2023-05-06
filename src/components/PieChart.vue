@@ -151,7 +151,6 @@ watch(
         return midangle < Math.PI ? 'start' : 'end'
       })
       .style('font-size', 9)
-      .style('font-family', 'Inter')
       .style('fill', 'white')
       .transition()
       .delay(totalDuration + 200)
@@ -219,9 +218,9 @@ watch(
 .bg {
   position: absolute;
   width: 342px;
-  height: 326px;
+  height: 30.186vh;
   left: 1559px;
-  top: 15px;
+  top: 1.3888vh;
 
   background: rgba(21, 27, 58, 0.7);
   border-radius: 5px;

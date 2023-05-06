@@ -43,9 +43,9 @@ watch(
 .bg {
   position: absolute;
   width: 200px;
-  height: 326px;
+  height: 30.185vh;
   left: 1344px;
-  top: 15px;
+  top: 1.3888vh;
 
   background: rgba(21, 27, 58, 0.7);
   border-radius: 5px;
@@ -54,7 +54,6 @@ watch(
 }
 
 header {
-  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-size: 18px;
@@ -88,7 +87,6 @@ label {
   display: flex;
   align-items: center;
 
-  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -100,7 +98,7 @@ label span {
 }
 
 main {
-  max-height: 252px; /* 设置一个适当的高度 */
+  max-height: 23vh; /* 设置一个适当的高度 */
   overflow-y: auto; /* 在需要时显示垂直滚动条 */
   padding-right: 7px; /* 防止滚动条与文字重叠 */
 }

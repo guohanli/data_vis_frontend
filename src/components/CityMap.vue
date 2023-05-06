@@ -24,7 +24,7 @@ const fireStore = useFireStore()
 function calculateGridData(
   fireLocations: FireLocation[],
   fireStations: FireStation[],
-  gridSize = 0.05
+  gridSize = 0.02
 ): GridData[] {
   const width = 1920
   const height = 1080

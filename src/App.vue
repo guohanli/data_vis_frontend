@@ -5,6 +5,7 @@ import TimeLine from './components/TimeLine.vue'
 import ScenarioFilter from './components/ScenarioFilter.vue'
 import PieChart from './components/PieChart.vue'
 import StreamGraph from './components/StreamGraph.vue'
+import FactorAnalysis from './components/FactorAnalysis.vue'
 </script>
 
 <template>
@@ -14,6 +15,7 @@ import StreamGraph from './components/StreamGraph.vue'
   <ScenarioFilter />
   <PieChart />
   <StreamGraph />
+  <FactorAnalysis />
 </template>
 
 <style scoped></style>
