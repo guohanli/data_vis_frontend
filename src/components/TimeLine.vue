@@ -44,8 +44,8 @@ watch(
     }) as LineDataItem[]
 
     const width = 1308
-    const height = 138
-    const margin = { top: 20, right: 25, bottom: 20, left: 40 }
+    const height = 160
+    const margin = { top: 20, right: 25, bottom: 30, left: 40 }
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
@@ -53,7 +53,7 @@ watch(
       .select(lineChart.value)
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('width', '100%')
-      .attr('height', '78%')
+      .attr('height', '80%')
     const innerChart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`)
 
     // 定义 x 轴和 y 轴的比例尺
@@ -83,7 +83,7 @@ watch(
       .attr('transform', `translate(0, ${innerHeight})`)
       .call(bottomAxis)
       .call((g) => g.select('.domain').remove())
-      .call((g) => g.selectAll('.tick text').attr('fill', '#A3A3A3'))
+      .call((g) => g.selectAll('.tick text').attr('y', 15).attr('fill', '#A3A3A3'))
       .call((g) => g.selectAll('.tick line').style('color', '#A3A3A3'))
     innerChart
       .append('g')
@@ -182,7 +182,7 @@ watch(
       d3.select(this)
         .select('.selection')
         .attr('stroke', 'none')
-        .attr('height', 90)
+        .attr('height', innerHeight)
         .attr('fill', 'rgba(226, 234, 255, 0.6)')
 
       // 如果没有选中区域，则默认是全部区域
@@ -195,7 +195,7 @@ watch(
       const [x0, x1] = e.selection
 
       const upBias = 13
-      const downBias = 37
+      const downBias = 40
       // 在brush选区的左右两侧添加边界线
       const lines = [
         { x1: x0, y1: -upBias, x2: x0, y2: height - downBias },
@@ -246,7 +246,13 @@ watch(
       fireStore.timeRange = [startDate, endDate]
     }
 
-    const brush = d3.brushX().on('start brush end', handleBrush)
+    const brush = d3
+      .brushX()
+      .extent([
+        [0, 0],
+        [innerWidth, innerHeight]
+      ])
+      .on('start brush end', handleBrush)
     innerChart.append('g').attr('class', 'brush').call(brush)
   }
 )
@@ -256,7 +262,7 @@ watch(
 .bg {
   position: absolute;
   width: 1313px;
-  height: 178px;
+  height: 200px;
   left: 16px;
   top: 15px;
 

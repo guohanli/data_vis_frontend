@@ -1,6 +1,9 @@
 <template>
   <div class="factor-bg">
-    <svg ref="factorSvg"></svg>
+    <svg ref="factorSvg" v-show="Object.keys(weatherStore.fireFactorData).length === 15"></svg>
+    <div class="info" v-show="Object.keys(weatherStore.fireFactorData).length !== 15">
+      前方的区域，选中数据后再来探索吧
+    </div>
   </div>
   <div v-show="weatherStore.highlightedFactor !== null" class="distribution-bg">
     <svg ref="distributionSvg"></svg>
@@ -338,5 +341,17 @@ watch(
 
   background: rgba(21, 27, 58, 0.5);
   border-radius: 5px;
+}
+
+.info {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  color: #fff;
+  font-size: 40px;
 }
 </style>
