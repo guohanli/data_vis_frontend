@@ -169,7 +169,7 @@ watch(
   width: 558px;
   height: 25vh;
   left: 1344px;
-  top: 73vh;
+  top: 32.685vh;
 
   background: rgba(21, 27, 58, 0.7);
   border-radius: 5px;

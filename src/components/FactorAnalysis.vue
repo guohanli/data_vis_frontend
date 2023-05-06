@@ -94,7 +94,7 @@ watch(
 
     const width = 558
     const height = 426
-    const margin = { top: 40, right: 30, bottom: 115, left: 55 }
+    const margin = { top: 40, right: 30, bottom: 80, left: 55 }
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
@@ -191,7 +191,7 @@ watch(
 
     const width = 700
     const height = 426
-    const margin = { top: 40, right: 30, bottom: 40, left: 50 }
+    const margin = { top: 45, right: 30, bottom: 40, left: 50 }
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
@@ -271,11 +271,11 @@ watch(
       .attr('opacity', '0.6')
 
     // 添加图表标题
-    innerChart
+    svg
       .append('text')
       .text(nameMap[key as keyof typeof nameMap])
-      .attr('x', innerWidth / 2)
-      .attr('y', -20)
+      .attr('x', width / 2)
+      .attr('y', 30)
       .attr('text-anchor', 'middle')
       .attr('font-size', 16)
       .style('fill', '#fff')
@@ -323,7 +323,7 @@ watch(
   width: 558px;
   height: 39.444vh;
   left: 1344px;
-  top: 32.685vh;
+  top: 58.8vh;
 
   background: rgba(21, 27, 58, 0.5);
   border-radius: 5px;
@@ -333,8 +333,8 @@ watch(
   position: absolute;
   width: 700px;
   height: 39.444vh;
-  left: 625px;
-  top: 32.685vh;
+  left: 632px;
+  top: 58.8vh;
 
   background: rgba(21, 27, 58, 0.5);
   border-radius: 5px;

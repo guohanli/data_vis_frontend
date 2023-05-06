@@ -255,7 +255,7 @@ watch(
 <style scoped>
 .bg {
   position: absolute;
-  width: 1308px;
+  width: 1313px;
   height: 178px;
   left: 16px;
   top: 15px;
