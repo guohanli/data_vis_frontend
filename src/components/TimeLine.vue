@@ -45,7 +45,7 @@ watch(
 
     const width = 1308
     const height = 160
-    const margin = { top: 20, right: 25, bottom: 30, left: 40 }
+    const margin = { top: 35, right: 25, bottom: 30, left: 40 }
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
@@ -173,7 +173,44 @@ watch(
       .delay(1500)
       .duration(1500)
 
+    // TODO: 鼠标悬浮时显示一条垂直的参考线和对应的数据
+    const referenceLineGroup = innerChart.append('g').attr('class', 'reference-line-group')
+    function handleMouseMove(e: MouseEvent) {
+      const [x] = d3.pointer(e, innerChart.node())
+
+      const date = xScale.invert(x)
+      console.log(x)
+      console.log(referenceLineGroup.empty())
+
+      const isInside = x > 0 && x < innerWidth
+      if (isInside) {
+        referenceLineGroup.selectAll('*').remove()
+        referenceLineGroup
+          .append('line')
+          .attr('class', 'reference-line')
+          .attr('stroke', '#fff')
+          .attr('stroke-dasharray', '5,5')
+        referenceLineGroup.append('text').attr('class', 'reference-text').attr('fill', '#fff')
+
+        const referenceLine = referenceLineGroup.select('.reference-line')
+        const referenceText = referenceLineGroup.select('.reference-text')
+        referenceLine.attr('x1', x).attr('x2', x).attr('y2', innerHeight)
+        referenceText
+          .attr('x', x)
+          .attr('y', -17)
+          .text(d3.timeFormat('%Y-%m')(date))
+          .attr('text-anchor', 'middle')
+      }
+    }
+    innerChart.on('mousemove', handleMouseMove)
+    innerChart.on('mouseleave', () => {
+      referenceLineGroup.selectAll('*').remove()
+    })
+
     function handleBrush(this: SVGGElement, e: any) {
+      // 清除参考线
+      referenceLineGroup.selectAll('*').remove()
+
       // 清除先前添加的边界线和圆点
       d3.selectAll('.boundary-line').remove()
       d3.selectAll('.boundary-circle').remove()
@@ -187,6 +224,7 @@ watch(
 
       // 如果没有选中区域，则默认是全部区域
       if (!e.selection) {
+        d3.select(this).selectAll('.reference-text').remove()
         fireStore.timeRange = [parseTime('2007-01'), parseTime('2021-01')] as [Date, Date]
         return
       }
@@ -194,8 +232,8 @@ watch(
       // 获取brush的当前选区
       const [x0, x1] = e.selection
 
-      const upBias = 13
-      const downBias = 40
+      const upBias = 11
+      const downBias = 56
       // 在brush选区的左右两侧添加边界线
       const lines = [
         { x1: x0, y1: -upBias, x2: x0, y2: height - downBias },
@@ -232,6 +270,24 @@ watch(
         .attr('r', 5)
         .attr('fill', '#E2EAFF')
 
+      // 添加brush选区的开始和结束文字
+      const texts = [
+        { x: x0, y: -upBias - 6, text: d3.timeFormat('%Y-%m')(xScale.invert(x0)) },
+        { x: x1, y: -upBias - 6, text: d3.timeFormat('%Y-%m')(xScale.invert(x1)) }
+      ]
+
+      // 画出文字
+      d3.select(this)
+        .selectAll('.reference-text')
+        .data(texts)
+        .join('text')
+        .attr('class', 'reference-text')
+        .attr('x', (d) => d.x)
+        .attr('y', (d) => d.y)
+        .text((d) => d.text)
+        .attr('text-anchor', 'middle')
+        .attr('fill', '#fff')
+
       // 如果是brush结束事件，才获取选中的时间范围
       if (e.type !== 'end') return
 
@@ -261,7 +317,7 @@ watch(
 <style scoped>
 .bg {
   position: absolute;
-  width: 1313px;
+  width: 1308px;
   height: 200px;
   left: 16px;
   top: 15px;
