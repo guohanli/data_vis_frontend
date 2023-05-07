@@ -63,7 +63,12 @@ function calculateGridData(
           fire.fire_lng <= bottomRight[0]
         )
       })
-      const reinforcementCount = firesInCellReinforcement.length
+      var rf = 0
+      for (var jj = 0 ; jj < firesInCellReinforcement.length; jj++){
+        rf += (1 - 0.1*rf)
+      }
+      const reinforcementCount = rf
+      //const reinforcementCount = firesInCellReinforcement.length
 
       let totalDistance = 0
       let stationCount = 0
@@ -91,9 +96,14 @@ function calculateGridData(
 
       let risk
       if (fireCount == 0) {
-        risk = 0
+        risk = -8
       } else {
-        risk = fireCount / 500 + minDistance / 25 + (1 - stationCount / 5)
+        var fc = 0;
+        for (var ii = 0 ; ii < fireCount; ii++){
+          fc += (1 - 0.1*fc)
+        }
+        // risk = fireCount / 500 + minDistance / 25 + (1 - stationCount / 5)
+        risk = Math.log((fc / 500 + minDistance / 25) / (1 + stationCount * 5))
       }
 
       gridData.push({
