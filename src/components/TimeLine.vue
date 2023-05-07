@@ -43,7 +43,7 @@ watch(
       return { date: parseTime(yearMonth), count: counts[yearMonth] }
     }) as LineDataItem[]
 
-    const width = 1308
+    const width = 1314
     const height = 160
     const margin = { top: 35, right: 25, bottom: 30, left: 40 }
     const innerWidth = width - margin.left - margin.right
@@ -317,7 +317,7 @@ watch(
 <style scoped>
 .bg {
   position: absolute;
-  width: 1308px;
+  width: 1314px;
   height: 200px;
   left: 16px;
   top: 15px;
