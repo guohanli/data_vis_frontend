@@ -1,6 +1,9 @@
 <template>
   <div class="bg">
-    <svg ref="lineChart"></svg>
+    <svg v-show="fireStore.typeFilteredFireData.length > 0" ref="lineChart"></svg>
+    <div class="info" v-show="fireStore.typeFilteredFireData.length === 0">
+      请至少选择一种类型 🫠
+    </div>
     <div class="layer-options">
       <div class="option" v-for="(value, key) in LayerTypeDict" :key="key">
         <input type="checkbox" :id="key" :value="key" v-model="mapStore.mapLayers" />
@@ -29,8 +32,13 @@ const LayerTypeDict = {
 }
 
 watch(
-  () => fireStore.fireData,
+  () => fireStore.typeFilteredFireData,
   (fireData) => {
+    // 删除.inner-chart下的直接子元素，除了.brush的元素
+    d3.select(lineChart.value).selectAll('.inner-chart > :not(.brush)').remove()
+    // 如果没有数据，就连brush也删了算了
+    if (!fireData.length) d3.select(lineChart.value).selectAll('*').remove()
+
     // 计算每个月的火灾数量
     const counts: Counts = {}
     fireData.forEach((fire) => {
@@ -54,12 +62,20 @@ watch(
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('width', '100%')
       .attr('height', '80%')
-    const innerChart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+    let innerChart = svg.select<SVGGElement>('.inner-chart')
+    // 选择inner-chart元素，如果不存在的话
+    if (innerChart.empty()) {
+      innerChart = svg
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`)
+        .attr('class', 'inner-chart')
+    }
 
     // 定义 x 轴和 y 轴的比例尺
     const xScale = d3
       .scaleTime()
-      .domain(d3.extent(lineData, (d) => d.date) as [Date, Date])
+      .domain([new Date('2007-01'), new Date('2020-12')])
       .range([0, innerWidth])
       .nice()
 
@@ -309,7 +325,11 @@ watch(
         [innerWidth, innerHeight]
       ])
       .on('start brush end', handleBrush)
-    innerChart.append('g').attr('class', 'brush').call(brush)
+    if (svg.select('.brush').empty()) {
+      innerChart.append('g').attr('class', 'brush').call(brush)
+    } else {
+      svg.select<SVGGElement>('.brush').call(brush)
+    }
   }
 )
 </script>
@@ -365,5 +385,17 @@ label {
 
 label span {
   flex-shrink: 0;
+}
+
+.info {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  color: #fff;
+  font-size: 40px;
 }
 </style>

@@ -66,6 +66,11 @@ export const useFireStore = defineStore('fire', () => {
     )
   })
 
+  const typeFilteredFireData = computed(() => {
+    // 按火灾类型过滤
+    return fireData.value.filter((d) => fireTypes.value.includes(d.fire_type))
+  })
+
   const fireLocations = computed(() => {
     // 传回经过过滤后的数据，所有火灾的经纬度
     const data: FireLocation[] = filteredData.value.map((d) => {
@@ -135,6 +140,7 @@ export const useFireStore = defineStore('fire', () => {
     highlightedType,
     filteredData,
     fireLocations,
-    fireStations
+    fireStations,
+    typeFilteredFireData
   }
 })
