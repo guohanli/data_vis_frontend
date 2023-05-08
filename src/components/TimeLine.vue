@@ -189,14 +189,11 @@ watch(
       .delay(1500)
       .duration(1500)
 
-    // TODO: 鼠标悬浮时显示一条垂直的参考线和对应的数据
     const referenceLineGroup = innerChart.append('g').attr('class', 'reference-line-group')
     function handleMouseMove(e: MouseEvent) {
       const [x] = d3.pointer(e, innerChart.node())
 
       const date = xScale.invert(x)
-      console.log(x)
-      console.log(referenceLineGroup.empty())
 
       const isInside = x > 0 && x < innerWidth
       if (isInside) {
