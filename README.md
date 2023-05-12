@@ -11,7 +11,7 @@ To run this code, first make sure you have `node.js` and `npm` on your computer.
 In the project root directory, run the following command to install the required dependencies.
 
 ```sh
-npm intsall
+npm install
 ```
 
 Run the following command to start the project.
