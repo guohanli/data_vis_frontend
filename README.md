@@ -1,46 +1,29 @@
-# data_vis_frontend
+# Firewise Data Visualization System
 
-This template should help get you started developing with Vue 3 in Vite.
+This repository houses the code for the SIST ARTS1422 Data Visualization final course project, developed using Vue3, Typescript, and D3.js. We've deployed a [live demo](https://data-vis-frontend.project.liguohan.com/) on vercel so you can check it out quickly.
 
-## Recommended IDE Setup
+## Install
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+The `src` directory houses all the code files, and the `public` directory houses the preprocessed data files.
 
-## Type Support for `.vue` Imports in TS
+To run this code, first make sure you have `node.js` and `npm` on your computer.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
+In the project root directory, run the following command to install the required dependencies.
 
 ```sh
-npm install
+npm intsall
 ```
 
-### Compile and Hot-Reload for Development
+Run the following command to start the project.
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## Screenshot
 
-```sh
-npm run build
-```
+![overview](screenshot/overview.png)
 
-### Lint with [ESLint](https://eslint.org/)
+![mouse hover on certain type](screenshot/mouse-hover-type.png)
 
-```sh
-npm run lint
-```
+![factor analysis](screenshot/factor-analysis.png)
